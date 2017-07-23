@@ -1,7 +1,9 @@
 import numpy as np
+import time
 import cv2
 face_cascade = cv2.CascadeClassifier('../opencvData/haarcascades/haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier('../opencvData/haarcascades/haarcascade_eye.xml')
+
 
 cap = cv2.VideoCapture(0)
 
@@ -13,17 +15,23 @@ def detectFaceAndEyes(gray, img):
         roi_gray = gray[y:y+h, x:x+w]
         roi_color = img[y:y+h, x:x+w]
         eyes = eye_cascade.detectMultiScale(roi_gray)
-        for (ex,ey,ew,eh) in eyes:
+        for (ex, ey, ew, eh) in eyes:
             cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (0, 255, 0), 2)
 
+times = []
 while True:
+
     ret, frame = cap.read()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    detectFaceAndEyes(gray, frame)
+    #detectFaceAndEyes(gray, frame)
+
+    frame = cv2.flip(frame, 1)
     cv2.imshow('face', frame)
+
     if cv2.waitKey(1) & 0xff == ord('q'):
         break
 
+#print sum(times)/len(times)
 cap.release()
 cv2.destroyAllWindows()
